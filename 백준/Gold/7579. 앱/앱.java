@@ -1,45 +1,38 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt(); // 앱의 개수
-        int M = sc.nextInt(); // 필요한 최소 메모리
-        int[] memories = new int[N]; // 앱이 사용하는 메모리
-        int[] costs = new int[N]; // 앱을 비활성화할 때의 비용
+public class Main{
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = null;
 
+        st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        int[][] a = new int[N][2];
+        st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            memories[i] = sc.nextInt();
+            a[i][0] = Integer.parseInt(st.nextToken()); // 메모리 바이트 수
+        }
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            a[i][1] = Integer.parseInt(st.nextToken()); // 비활성화 했을 경우의 비용
         }
 
-        for (int i = 0; i < N; i++) {
-            costs[i] = sc.nextInt();
-        }
-
-        int maxCost = 10000; // 문제의 조건에서 비용의 합의 최대가 10000
-        int[] dp = new int[maxCost + 1]; // dp 배열 초기화
-
-        // 동적 계획법으로 해결
-        for (int i = 0; i < N; i++) {
-            int memory = memories[i];
-            int cost = costs[i];
-
-            // 내림차순으로 비용을 처리하여 중복 업데이트 방지
-            for (int j = maxCost; j >= cost; j--) {
-                dp[j] = Math.max(dp[j], dp[j - cost] + memory);
+        int[] dp = new int[10001]; // 앱의 갯수 (100) * 비용의 최대 (100) == 10000 + 1 / 비용이 인덱스 , 메모리 바이트가 값 
+        for (int i = 0; i < N; i++) { 
+            for (int j = 10000; j >= 0 ; j--) {
+                if(a[i][1]<=j) dp[j] = Math.max(dp[j], dp[j-a[i][1]]+a[i][0]);
             }
         }
 
-        // 최소 비용을 찾기 위해 dp 배열을 순회
-        int answer = Integer.MAX_VALUE;
-        for (int i = 0; i <= maxCost; i++) {
-            if (dp[i] >= M) {
-                answer = i;
+        for (int i = 0; i < 10001; i++) { // 가장 먼저 필요한 메모리를 확보한 인덱스가 최소 비용!
+            if(dp[i] >= M) {
+                System.out.println(i);
                 break;
             }
         }
-
-        System.out.println(answer);
-        sc.close();
     }
 }
+
