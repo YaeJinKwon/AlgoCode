@@ -1,5 +1,6 @@
 import sys
 from collections import deque
+import copy
 input = sys.stdin.readline
 
 # input
@@ -31,24 +32,25 @@ dy = [0, 1, 0, -1]
 
 answer = 0
 
-def wall(count, start):
-    global answer
-    if count == 3:
-        count_virus = diff()
-        answer = max(zero - count_virus - 3, answer)
+def wall(c):
+    
+    if(c == 3):
+        diff()
         return
-    for idx in range(start, n * m):
-        i = idx // m
-        j = idx % m
-        if graph[i][j] == 0:
-            graph[i][j] = 1
-            wall(count + 1, idx + 1)
-            graph[i][j] = 0
+    for i in range (n):
+        for j in range(m):
+            if(graph[i][j] == 0):
+                graph[i][j] = 1
+                wall(c+1)
+                graph[i][j] = 0
 
+Vir = [[False]*m for _ in range(n)]
 
 def diff():
+
     count = 0
-    visitVir = [[False]*m for _ in range(n)]
+    visitVir = copy.deepcopy(Vir)
+
     for vir in virus:
         dq = deque([(vir[0],vir[1])])
         visitVir[vir[0]][vir[1]] = True
@@ -61,9 +63,10 @@ def diff():
                     visitVir[nx][ny] = True
                     count += 1
                     dq.append((nx,ny))
-    return count
+    global answer
+    answer = max(zero - count -3, answer)
                     
 
 
-wall(0,0)
+wall(0)
 print(answer)
