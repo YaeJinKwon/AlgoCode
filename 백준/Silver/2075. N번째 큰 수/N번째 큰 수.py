@@ -8,14 +8,12 @@ n = int(input())
 
 arr = []
 for _ in range(n):
-    arr.append(list(map(int,input().split())))
-
-ans = []
-for j in range(n):
-    heapq.heappush(ans,(-arr[n-1][j], n-1, j))
-
-for _ in range(n-1):
-    a, b, c = heapq.heappop(ans)
-    heapq.heappush(ans,(-arr[b-1][c], b-1 , c))
-
-print(-heapq.heappop(ans)[0])
+    nums = list(map(int,input().split()))
+    for i in nums:
+        if len(arr)<n:
+            heapq.heappush(arr,i)
+        else:
+            if arr[0] < i:
+                heapq.heappop(arr)
+                heapq.heappush(arr,i)
+print(arr[0])
