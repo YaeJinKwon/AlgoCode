@@ -14,17 +14,15 @@ for i in range(N-1):
 
 
 node = [0] * (N+1)
-node[1] = 1
 dq = deque()
-for i in graph[1]:
-    dq.append((1,i))
+dq.append(1)
 
 while dq:
-    parent, x = dq.popleft()
-    node[x] = parent
+    x = dq.popleft()
     for i in graph[x]:
         if(node[i] == 0):
-            dq.append((x, i))
+            node[i] = x
+            dq.append(i)
 
 for i in range(2, N+1):
     print(node[i])
